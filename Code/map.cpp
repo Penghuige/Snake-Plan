@@ -3,6 +3,8 @@
 #include <iostream>
 #include "controller.h"
 #include <random>
+#include <fstream>
+#include <sstream>
 
 bool Map::AddWall(int x, int y)
 {
@@ -30,7 +32,7 @@ void Map::RandomBuild()
 {
 	int a = WALL_NUM;
 	std::default_random_engine e;
-	std::uniform_int_distribution<int> u(0, std::max(2*ROW, 2 * COL)); // 左闭右闭区间
+	std::uniform_int_distribution<int> u(0, std::max(2 * ROW, 2 * COL)); // 左闭右闭区间
 	e.seed(time(0));
 	while (a--)
 	{
@@ -41,3 +43,73 @@ void Map::RandomBuild()
 		walls.emplace_back(p);
 	}
 }
+
+/**
+* 读取第x张地图
+*/
+//bool Map::LoadMap(int x)
+//{
+//	if (x - 1 > maps.size()) return false;
+	//for (auto& p : maps[x - 1])
+	//{
+	//	walls.emplace_back(p);
+	//}
+//	return true;
+//}
+
+
+void Map::GenerateMap(int width, int height, int pointCount, const std::string& filename)
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> distribX(0, width - 1);
+	std::uniform_int_distribution<int> distribY(0, height - 1);
+
+	std::ofstream file(filename);
+	if (!file.is_open()) {
+		std::cout << "Failed to open file: " << filename << std::endl;
+		return;
+	}
+
+	for (int i = 0; i < pointCount; ++i) {
+		int x = distribX(gen);
+		int y = distribY(gen);
+		file << x << "," << y << std::endl;
+	}
+
+	file.close();
+	std::cout << "Map generated successfully: " << filename << std::endl;
+}
+
+
+bool Map::LoadMap(int x)
+{
+	std::string filename = "./maps/map" + std::to_string(x) + ".txt"; // 根据地图编号生成文件名
+	std::ifstream file(filename);
+	if (!file.is_open()) {
+		// 文件打开失败
+		std::cout << "Open file " << filename << " failed." << std::endl;
+		return false;
+	}
+
+	std::vector<Point> m;
+	std::string line;
+	while (std::getline(file, line)) {
+		std::stringstream ss(line);
+		std::string coordinate;
+		while (std::getline(ss, coordinate, ',')) {
+			int x = std::stoi(coordinate);
+			std::getline(ss, coordinate, ',');
+			int y = std::stoi(coordinate);
+			Point p(x, y);
+			m.push_back(p);
+		}
+	}
+
+	for (auto& p : m)
+	{
+		walls.emplace_back(p);
+	}
+	return true;
+}
+

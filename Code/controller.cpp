@@ -133,7 +133,6 @@ void Controller::gameMenu()
 
 		switch (_getch())
 		{
-
 		case 'w':
 		case 'W':
 			if (--cur < 0)
@@ -286,11 +285,29 @@ void Controller::gameProductionTeamText(void)
 void Controller::gameStart(int mode)
 {
 	Map m1;
-	if (mode == ADVENTURE_MODE)
+	if(mode == CLASSIC_MODE)
+	{
+		// 经典模式不需要其他操作
+	}
+	else if (mode == ADVENTURE_MODE)
 	{
 		// 随机生成墙体
 		// 或是调用已生成墙体
 		m1.RandomBuild();
+	}
+	else if( mode == LEVEL_MODE)
+	{
+		// 读取特定地图
+		m1.LoadMap(1);
+		// 读取食物
+
+	}
+	else if (mode == DUO_MODE)
+	{
+		// 读取地图
+		// 读取食物
+		// 读取墙体
+		// 读取蛇
 	}
 	Food food;
 	//初始化蛇
@@ -390,16 +407,6 @@ void Controller::gameendView(Snake& s)
 				break;
 			case 0:		// 再来一局
 				system("cls");
-				//if (mode == 1)
-				//{
-				//	init_P1();
-				//}
-				//else
-				//{
-				//	init();
-				//}
-
-
 				gamemodeView_flag = 0;
 				break;
 			default:
@@ -429,10 +436,10 @@ void Controller::ClearScreen()
 	}
 }
 
-// 设置界面
-/*
-界面与其他同理
-音量开关的调节---通过修改if的判定来使音乐播放与否
+/**
+* 设置界面
+* 界面与其他同理
+* 音量开关的调节---通过修改if的判定来使音乐播放与否
 */
 void Controller::gameFit(void)
 {
