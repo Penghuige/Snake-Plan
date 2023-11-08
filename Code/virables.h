@@ -7,11 +7,14 @@
 * ROW 游戏区行数row，控制整个游戏区的大小
 * COL 游戏区列数column，控制整个游戏区的大小 因为墙壁占两个空格
 * MAX_DIR_BUF 最大方向缓冲区，用来控制蛇的移动方向
+* WALL_NUM 墙体数量
+* MIN_DIST 墙体不生成区域 防止开局被杀
 */
 #define ROW 14
-#define COL 24
+#define COL 36
 #define MAX_DIR_BUF 10
-#define WALL "■"
+#define WALL_NUM 30
+#define MIN_DIST 10
 
 /*
 * 可改
@@ -28,6 +31,16 @@
 #define SNAKE_ACCELERATION 100
 #define SCORE_ACCERELATION 10
 #define SPEED_RANGE_LIMIT 1.5
+
+/**
+* 不可改
+* CLASSIC_MODE 经典模式
+* ADVENTURE_MODE 冒险模式
+*/
+
+#define CLASSIC_MODE 1
+#define ADVENTURE_MODE 2
+
 
 /**
 * 不可改

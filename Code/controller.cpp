@@ -212,11 +212,12 @@ void Controller::gamemodeView(void)
 			{
 			case 0:		// 经典模式
 				system("cls");
-				gameStart();
+				gameStart(CLASSIC_MODE);
 				gamemodeView_flag = 0;
 				break;
-			case 1:		// 双人模式
+			case 1:		// 冒险模式
 				system("cls");
+				gameStart(ADVENTURE_MODE);
 				//mode = 2;
 				//init();//初始化，双人模式
 				gamemodeView_flag = 0;
@@ -259,9 +260,15 @@ void Controller::gameProductionTeamText(void)
 /**
 * 游戏启动函数
 */
-void Controller::gameStart()
+void Controller::gameStart(int mode)
 {
 	Map m1;
+	if (mode == ADVENTURE_MODE)
+	{
+		// 随机生成墙体
+		// 或是调用已生成墙体
+		m1.RandomBuild();
+	}
 	Food food;
 	//初始化蛇
 	Snake s1, s2;
@@ -270,7 +277,7 @@ void Controller::gameStart()
 	m1.PrintInitmap();
 	while (run_flag)
 	{
-		run_flag = (gameRunning(s1, food));
+		run_flag = (gameRunning(s1, food, m1));
 	}
 	// 清空屏幕
 	ClearScreen();
@@ -283,7 +290,7 @@ void Controller::gameStart()
 	//gotoxy(1, ROW + 3);
 	//printf("按ESC键退出");
 }
-int Controller::gameRunning(Snake& s1, Food& food)
+int Controller::gameRunning(Snake& s1, Food& food, Map& m)
 {
 	// 打印蛇
 	s1.changeDirection();
@@ -292,7 +299,7 @@ int Controller::gameRunning(Snake& s1, Food& food)
 	{
 		s1.EatFood(food);
 	}
-	if (s1.isDead()) return 0;
+	else if (s1.isDead(m)) return 0;
 	s1.PrintSnake();
 	// 打印食物
 	food.PrintFood();

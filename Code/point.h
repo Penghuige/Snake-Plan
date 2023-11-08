@@ -3,10 +3,12 @@
 #define _POINT_H_
 
 #include "virables.h"
+#include <cmath>
 
 /**
 * 游戏内的显示格式 x  y
 * 蛇 食物 墙
+* 判断靠近函数
 */
 class Point
 {
@@ -21,6 +23,8 @@ public:
 	void operator=(Point p) { this->x = p.x; this->y = p.y; }
 	bool operator==(Point p) { return this->x == p.x && this->y == p.y; }
 	bool operator!=(Point p) { return this->x != p.x || this->y != p.y; }
+	bool Nearby(Point p) { return (p.x - x) <= MIN_DIST && (p.y - y) <= MIN_DIST; }
+	bool Nearby(int x, int y) { return abs(x - this->x) <= MIN_DIST && abs(y - this->y) <= MIN_DIST; }
 	~Point() {}
 private:
 	int x;

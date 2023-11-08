@@ -1,5 +1,6 @@
 #include <iostream>
 #include "food.h"
+#include "map.h"
 #include "snake.h"
 #include "controller.h"
 #include <conio.h>
@@ -125,15 +126,24 @@ void Snake::PrintSnake()
 * 通过判断蛇头是否与蛇身重合实现
 * 以及判断蛇头是否与墙重合实现
 */
-bool Snake::isDead()
+bool Snake::isDead(Map& m)
 {
+	/*
+	局内墙体变化
+	*/
+	for (auto& it : m.walls)
+	{
+		if (head == it)
+			return true;
+	}
 	for (auto it = snake.begin() + 1; it != snake.end(); it++)
 	{
 		if (head == *it)
 			return true;
 	}
-	if (head.getX() < 0 || head.getX() >= 2 * COL || head.getY() <= 0 || head.getY() >= 2 * ROW) return true;
-	else return false;
+	//if (head.getX() < 0 || head.getX() >= 2 * COL || head.getY() <= 0 || head.getY() >= 2 * ROW) return true;
+	//else return false;
+	return false;
 }
 
 /**

@@ -5,16 +5,17 @@
 #include "virables.h"
 #include "point.h"
 #include "food.h"
+#include "map.h"
 #include <deque>
 
 //蛇头1,2
-class Snake:Point
+class Snake: public Point
 {
 public:
 	enum Direction { UP, DOWN, LEFT, RIGHT }; //枚举方向
 	Snake(); //构造函数
 	void move(); //移动
-	bool isDead(); //判断是否死亡
+	bool isDead(Map& m); //判断是否死亡
 	bool changeDirection(); //改变方向
 	void EatFood(Food& f); //吃食物
 	void PrintSnake(); //打印蛇

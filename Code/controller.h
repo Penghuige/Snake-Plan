@@ -23,9 +23,9 @@ public:
 	// 制作组
 	void gameProductionTeamText();
 	// 游戏启动
-	void gameStart();
+	void gameStart(int mode);
 	// 游戏运行
-	int gameRunning(Snake& s1, Food& food);
+	int gameRunning(Snake& s1, Food& food, Map& m);
 	//游戏结束
 	void gameendView(Snake& s);
 	// 清理屏幕
