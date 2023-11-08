@@ -40,7 +40,8 @@
 
 #define CLASSIC_MODE 1
 #define ADVENTURE_MODE 2
-
+#define LEVEL_MODE 3
+#define DUO_MODE 4
 
 /**
 * ²»¿É¸Ä

@@ -54,6 +54,10 @@ void Controller::gotoxy(int x, int y)
 	pos.Y = y; //纵坐标
 	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE); //获取控制台句柄
 	SetConsoleCursorPosition(handle, pos); //设置光标位置
+	CONSOLE_CURSOR_INFO CursorInfo;
+	GetConsoleCursorInfo(handle, &CursorInfo);//获取控制台光标信息
+	CursorInfo.bVisible = false; //隐藏控制台光标
+	SetConsoleCursorInfo(handle, &CursorInfo);//设置控制台光标状态
 }
 
 // 接受输入函数
@@ -114,12 +118,18 @@ void Controller::gameMenu()
 	{
 		int gameMenu_flag = 1;
 		system("cls");
-		printf("\t 主菜单\n");
-		printf("%s\t开始游戏%s\n", cur == 0 ? "   -->" : "", cur == 0 ? "  <--" : "");
-		printf("%s\t  设置  %s\n", cur == 1 ? "   -->" : "", cur == 1 ? "  <--" : "");
-		printf("%s\t游戏说明%s\n", cur == 2 ? "   -->" : "", cur == 2 ? "  <--" : "");
-		printf("%s\t退出游戏%s\n", cur == 3 ? "   -->" : "", cur == 3 ? "  <--" : "");
-		printf("%s\t 制作组 %s\n", cur == 4 ? "   -->" : "", cur == 4 ? "  <--" : "");
+		gotoxy(COL - 4, ROW / 2);
+		printf("主菜单\n");
+		gotoxy(COL - 4, ROW / 2 + 2);
+		printf("%s开始游戏", cur == 0 ? "==>" : "");
+		gotoxy(COL - 4, ROW / 2 + 4);
+		printf("%s设置", cur == 1 ? "==>" : "");
+		gotoxy(COL - 4, ROW / 2 + 6);
+		printf("%s游戏说明", cur == 2 ? "==>" : "");
+		gotoxy(COL - 4, ROW / 2 + 8);
+		printf("%s退出游戏", cur == 3 ? "==>" : "");
+		//gotoxy(COL - 4, ROW / 2 + 10);
+		//printf("%s制作组", cur == 4 ? "==>" : "");
 
 		switch (_getch())
 		{
@@ -133,9 +143,9 @@ void Controller::gameMenu()
 			break;
 		case 's':
 		case 'S':
-			if (++cur > 4)
+			if (++cur > 3)
 			{
-				cur = 4;
+				cur = 3;
 			}
 			break;
 		case '\r':
@@ -185,9 +195,16 @@ void Controller::gamemodeView(void)
 	{
 		int gamemodeView_flag = 1;  //借力跳出循环
 		system("cls");
-		printf("\t游戏模式\n");
-		printf("%s\t经典模式%s\n", cur == 0 ? "   -->" : "", cur == 0 ? "  <--" : "");
-		printf("%s\t双人模式%s\n", cur == 1 ? "   -->" : "", cur == 1 ? "  <--" : "");
+		gotoxy(COL - 4, ROW / 2);
+		printf("游戏模式\n");
+		gotoxy(COL - 4, ROW / 2 + 2);
+		printf("%s经典模式\n", cur == 0 ? "==>" : "");
+		gotoxy(COL - 4, ROW / 2 + 4);
+		printf("%s冒险模式\n", cur == 1 ? "==>" : "");
+		gotoxy(COL - 4, ROW / 2 + 6);
+		printf("%s闯关模式\n", cur == 2 ? "==>" : "");
+		gotoxy(COL - 4, ROW / 2 + 8);
+		printf("%s双人模式\n", cur == 3 ? "==>" : "");
 
 		switch (_getch())
 		{
@@ -202,9 +219,9 @@ void Controller::gamemodeView(void)
 			break;
 		case 's':
 		case 'S':
-			if (++cur > 1)
+			if (++cur > 3)
 			{
-				cur = 1;
+				cur = 3;
 			}
 			break;
 		case '\r':
@@ -213,14 +230,20 @@ void Controller::gamemodeView(void)
 			case 0:		// 经典模式
 				system("cls");
 				gameStart(CLASSIC_MODE);
-				gamemodeView_flag = 0;
+				//gamemodeView_flag = 0;
 				break;
 			case 1:		// 冒险模式
 				system("cls");
 				gameStart(ADVENTURE_MODE);
-				//mode = 2;
-				//init();//初始化，双人模式
-				gamemodeView_flag = 0;
+				//gamemodeView_flag = 0;
+				break;
+			case 2:		// 闯关模式 -- 特定地图 限定食物 未完成
+				system("cls");
+				gameStart(LEVEL_MODE);
+				break;
+			case 3:
+				system("cls");
+				gameStart(DUO_MODE);
 				break;
 			default:
 				break;
@@ -395,9 +418,9 @@ void Controller::gameendView(Snake& s)
 
 void Controller::ClearScreen()
 {
-	for (int i = 0; i <= 2*ROW; i++)
+	for (int i = 0; i <= 2 * ROW; i++)
 	{
-		for (int j = 0; j <= 2*COL+2; j++)
+		for (int j = 0; j <= 2 * COL + 2; j++)
 		{
 			gotoxy(j, i);
 			printf(" ");

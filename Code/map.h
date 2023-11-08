@@ -4,7 +4,6 @@
 
 #include "virables.h"
 #include "point.h"
-#include "wall.h"
 #include <vector>
 
 

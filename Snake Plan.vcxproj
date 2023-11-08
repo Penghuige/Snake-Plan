@@ -140,7 +140,6 @@
     <ClInclude Include="Code\point.h" />
     <ClInclude Include="Code\snake.h" />
     <ClInclude Include="Code\virables.h" />
-    <ClInclude Include="Code\wall.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
