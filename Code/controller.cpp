@@ -285,6 +285,9 @@ void Controller::gameProductionTeamText(void)
 void Controller::gameStart(int mode)
 {
 	Map m1;
+	Food food;
+	//初始化蛇
+	Snake s1, s2;
 	if(mode == CLASSIC_MODE)
 	{
 		// 经典模式不需要其他操作
@@ -300,7 +303,8 @@ void Controller::gameStart(int mode)
 		// 读取特定地图
 		m1.LoadMap(1);
 		// 读取食物
-
+		food.num = FOOD_NUM;
+		food.mode = LEVEL_MODE;
 	}
 	else if (mode == DUO_MODE)
 	{
@@ -309,15 +313,17 @@ void Controller::gameStart(int mode)
 		// 读取墙体
 		// 读取蛇
 	}
-	Food food;
-	//初始化蛇
-	Snake s1, s2;
-	int run_flag = 1;
+	int run_flag = GAME_RUNNING;
 	// 打印地图
 	m1.PrintInitmap();
-	while (run_flag)
+	while (run_flag == GAME_RUNNING)
 	{
 		run_flag = (gameRunning(s1, food, m1));
+	}
+	if (run_flag == LEVEL_VICTORY)
+	{
+		// 跳转游戏胜利画面
+		PauseView();
 	}
 	// 清空屏幕
 	ClearScreen();
@@ -337,14 +343,17 @@ int Controller::gameRunning(Snake& s1, Food& food, Map& m)
 	s1.move();
 	if (s1.getHead() == food.getFood())
 	{
+		if (food.num) food.num--;
 		s1.EatFood(food);
 	}
-	else if (s1.isDead(m)) return 0;
+	else if (s1.isDead(m)) return SNACK_LOSE;
+	if (food.mode == LEVEL_MODE && !food.num) return LEVEL_VICTORY;
 	s1.PrintSnake();
 	// 打印食物
 	food.PrintFood();
 	// 打印分数
 	s1.PrintScore();
+	return GAME_RUNNING;
 }
 
 //游戏结束界面

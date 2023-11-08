@@ -15,6 +15,7 @@
 #define MAX_DIR_BUF 10
 #define WALL_NUM 30
 #define MIN_DIST 10
+#define FOOD_NUM 3
 
 /*
 * 可改
@@ -42,6 +43,12 @@
 #define ADVENTURE_MODE 2
 #define LEVEL_MODE 3
 #define DUO_MODE 4
+
+#define STANDARD_MODE 0
+#define STANDARD_FOOD 0
+#define SNACK_LOSE 0
+#define GAME_RUNNING 1
+#define LEVEL_VICTORY 2
 
 /**
 * 不可改

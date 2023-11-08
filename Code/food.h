@@ -12,6 +12,8 @@ public:
 	void setFood();
 	Point getFood();
 	~Food();
+	int mode = STANDARD_MODE;	//模式
+	int num = STANDARD_FOOD;	//闯关模式专属
 private:
 	Point food;
 };
