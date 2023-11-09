@@ -9,6 +9,9 @@
 * MAX_DIR_BUF 最大方向缓冲区，用来控制蛇的移动方向
 * WALL_NUM 墙体数量
 * MIN_DIST 墙体不生成区域 防止开局被杀
+* FOOD_NUM 食物数量
+* POWER_TIME 吃到无敌食物后的无敌时间
+* GENER_FREQU 道具生成频率,越大生成越慢
 */
 #define ROW 14
 #define COL 36
@@ -16,6 +19,8 @@
 #define WALL_NUM 30
 #define MIN_DIST 10
 #define FOOD_NUM 3
+#define POWER_TIME 10
+#define GENER_FREQU 100
 
 /*
 * 可改
@@ -46,6 +51,9 @@
 
 #define STANDARD_MODE 0
 #define STANDARD_FOOD 0
+#define HASTEN_FOOD 1
+#define POWER_FOOD 2
+
 #define SNACK_LOSE 0
 #define GAME_RUNNING 1
 #define LEVEL_VICTORY 2

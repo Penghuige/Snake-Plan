@@ -297,6 +297,7 @@ void Controller::gameStart(int mode)
 		// 随机生成墙体
 		// 或是调用已生成墙体
 		m1.RandomBuild();
+		food.mode = HASTEN_FOOD;
 	}
 	else if( mode == LEVEL_MODE)
 	{
@@ -327,32 +328,27 @@ void Controller::gameStart(int mode)
 	}
 	// 清空屏幕
 	ClearScreen();
-	//// 打印最高分
-	//max_score = ReadGrade();
-	//// 打印暂停
-	//gotoxy(1, ROW + 2);
-	//printf("按空格键暂停");
-	//// 打印退出
-	//gotoxy(1, ROW + 3);
-	//printf("按ESC键退出");
 }
 int Controller::gameRunning(Snake& s1, Food& food, Map& m)
 {
 	// 打印蛇
 	s1.changeDirection();
 	s1.move();
-	if (s1.getHead() == food.getFood())
+	if(s1.isDead(m)) return SNACK_LOSE;
+	if (s1.getHead() == food.GetFood())
 	{
 		if (food.num) food.num--;
 		s1.EatFood(food);
 	}
-	else if (s1.isDead(m)) return SNACK_LOSE;
 	if (food.mode == LEVEL_MODE && !food.num) return LEVEL_VICTORY;
 	s1.PrintSnake();
 	// 打印食物
 	food.PrintFood();
 	// 打印分数
 	s1.PrintScore();
+	// 随机生成道具
+	food.RandomFood();
+
 	return GAME_RUNNING;
 }
 
@@ -375,20 +371,8 @@ void Controller::gameendView(Snake& s)
 			std::cout << "你的得分为" << s.getScore();
 			std::cout << "历史最高得分为" << MAX(s.getScore(), max_score);
 		}
-		//else { //
-		//	if (snake_win == 3)
-		//	{
-		//		printf("\t平局啦\n");
-		//	}
-		//	else {
-		//		printf("\t赢家是蛇%d\n", snake_win);
-		//	}
-		//	printf("\t小青蛇的得分为%d\n", grade_p1);
-		//	printf("\t小蓝蛇的得分为%d\n", grade_p2);
-		//}
 		printf("%s\t再来一局%s\n", cur == 0 ? "   -->" : "", cur == 0 ? "  <--" : "");
 		printf("%s\t返回菜单%s\n", cur == 1 ? "   -->" : "", cur == 1 ? "  <--" : "");
-		// grade_p1 = 0, grade_p2 = 0;
 		switch (_getch())
 		{
 		case ' ':

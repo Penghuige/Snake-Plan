@@ -9,7 +9,7 @@
 */
 Food::Food()
 {
-	Food::setFood();
+	Food::SetStandardFood();
 }
 
 /**
@@ -18,24 +18,64 @@ Food::Food()
 void Food::PrintFood()
 {
 	Controller::gotoxy(Food::food.getX(), Food::food.getY());
-	std::cout << "★";
+	if(mode == STANDARD_FOOD) std::cout << "★";
+	else if(mode == HASTEN_FOOD) std::cout << "☆";
+	else if(mode == POWER_FOOD) std::cout << "◎";
 }
 
 /**
 * 食物的制造函数
 */
-void Food::setFood()
+void Food::SetStandardFood()
 {
 	srand((unsigned)time(NULL));
 	int x = rand() % (2 * COL - 2) + 2;
 	int y = rand() % (2 * ROW - 2) + 2;
 	food = Point(x / 2 * 2, y / 2 * 2);
+	mode = STANDARD_FOOD;
+}
+
+/**
+* 加速食物的制造函数
+*/
+void Food::SetHastenFood()
+{
+	srand((unsigned)time(NULL));
+	int x = rand() % (2 * COL - 2) + 2;
+	int y = rand() % (2 * ROW - 2) + 2;
+	mode = HASTEN_FOOD;
+	food = Point(x / 2 * 2, y / 2 * 2);
+}
+
+/**
+* 无敌食物的制造函数
+*/
+void Food::SetPowerFood()
+{
+	srand((unsigned)time(NULL));
+	int x = rand() % (2 * COL - 2) + 2;
+	int y = rand() % (2 * ROW - 2) + 2;
+	mode = POWER_FOOD;
+	food = Point(x / 2 * 2, y / 2 * 2);
+}
+
+/**
+* 随机生成道具的制造函数
+*/
+void Food::RandomFood()
+{
+	int x = rand() % (2 * COL - 2) + 2;
+	int y = rand() % (2 * ROW - 2) + 2;
+	food = Point(x / 2 * 2, y / 2 * 2);
+	int mode = rand() % GENER_FREQU;
+	if(mode == 0) Food::SetHastenFood();
+	else if(mode == 1) Food::SetPowerFood();
 }
 
 /**
 * 获取食物位置函数
 */
-Point Food::getFood()
+Point Food::GetFood()
 {
 	return food;
 }

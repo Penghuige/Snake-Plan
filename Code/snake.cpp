@@ -131,18 +131,53 @@ bool Snake::isDead(Map& m)
 	/*
 	局内墙体变化
 	*/
-	for (auto& it : m.walls)
+	if (invincible)
 	{
-		if (head == it)
-			return true;
+		// 说明蛇是无敌时间，需要跳过墙体
+		if (head.getX() == 0)
+		{
+			// 说明蛇头在左墙
+			head = Point(2 * COL - 2, head.getY());
+			return false;
+		}
+		else if (head.getX() == 2 * COL)
+		{
+			// 说明蛇头在右墙
+			head = Point(2, head.getY());
+			return false;
+		}
+		else if (head.getY() == 0)
+		{
+			//说明蛇头在上墙
+			head = Point(head.getX(), 2 * ROW - 1);
+			return false;
+		}
+		else if (head.getY() == 2 * ROW)
+		{
+			// 说明蛇头在下墙
+			head = Point(head.getX(), 1);
+			return false;
+		}
+		// 其他墙 直接吃掉即可
 	}
+	for (auto it = m.walls.begin(); it != m.walls.end(); it++)
+	{
+		if (head == *it)
+		{
+			if (invincible)
+			{
+				m.walls.erase(it);
+				return false;
+			}
+			else return true;
+		}
+	}
+	if (invincible) return false;
 	for (auto it = snake.begin() + 1; it != snake.end(); it++)
 	{
 		if (head == *it)
 			return true;
 	}
-	//if (head.getX() < 0 || head.getX() >= 2 * COL || head.getY() <= 0 || head.getY() >= 2 * ROW) return true;
-	//else return false;
 	return false;
 }
 
@@ -154,15 +189,25 @@ bool Snake::isDead(Map& m)
 void Snake::EatFood(Food& f)
 {
 	score += SCORE_ACCERELATION;
-	/*输入变化智能化，在原速度1.5倍前迅速增长，后续缓慢增长，还需优化*/
-	if (speed < SPEED_RANGE_LIMIT * SNAKE_SPEED) speed += SNAKE_ACCELERATION;
-	else speed += SNAKE_ACCELERATION / 10;
+	/*如果吃到的食物是加速食物 获得速度加成*/
+	if (f.mode == HASTEN_FOOD)
+	{
+		/*输入变化智能化，在原速度1.5倍前迅速增长，后续缓慢增长，还需优化*/
+		if (speed < SPEED_RANGE_LIMIT * SNAKE_SPEED) speed += SNAKE_ACCELERATION;
+		else speed += SNAKE_ACCELERATION / 10;
+	}
+	else if (f.mode == POWER_FOOD)
+	{
+		/*无敌食物，吃到后获得POWER_TIME秒无敌*/
+		invincible = true;
+		invincibleTime = POWER_TIME;
+	}
 
 	Controller::gotoxy(f.getX(), f.getY());
 	// 一个方块占两个空格
 	std::cout << "  ";
 	snake.emplace_back(f);
-	f.setFood();
+	if(f.mode == STANDARD_FOOD) f.SetStandardFood();
 }
 
 /**

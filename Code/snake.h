@@ -29,6 +29,8 @@ private:
 	Point head; //蛇头
 	int speed;
 	int score;
+	bool invincible = false; //蛇是否无敌
+	int invincibleTime = 0; //无敌时间
 };
 
 
