@@ -288,7 +288,7 @@ void Controller::GameStart(int mode)
 	Food food;
 	//初始化蛇
 	Snake s1;
-	if(mode == CLASSIC_MODE)
+	if (mode == CLASSIC_MODE)
 	{
 		// 经典模式不需要其他操作
 		food.mode = CLASSIC_MODE;
@@ -301,18 +301,16 @@ void Controller::GameStart(int mode)
 		m1.RandomBuild();
 		food.mode = HASTEN_FOOD;
 	}
-	else if( mode == LEVEL_MODE)
+	else if (mode == LEVEL_MODE)
 	{
 		// 读取特定地图
 		m1.LoadMap(1);
 		// 加载食物
-		int a = FOOD_NUM;
-		while (a--)
+		std::vector<Food> foods = food.SetStandardFood(FOOD_NUM);
+		for (auto& it : foods)
 		{
-			food.SetStandardFood();
-			m1.food_list.emplace_back(food);
+			m1.food_list.emplace_back(it);
 		}
-		food.mode = LEVEL_MODE;
 	}
 	else if (mode == DUO_MODE)
 	{

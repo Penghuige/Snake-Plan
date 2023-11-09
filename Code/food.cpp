@@ -4,6 +4,41 @@
 #include "food.h"
 #include "controller.h"
 #include <random>
+#include <vector>
+
+/**
+* 食物的制造函数
+*/
+Food Food::SetStandardFood()
+{
+	unsigned int s = (unsigned int)time(0);
+	std::default_random_engine e;
+	std::uniform_int_distribution<int> u(0, std::max(2 * ROW, 2 * COL)); // 左闭右闭区间
+	e.seed(s);
+	int x = u(e) % (2 * COL - 2) + 2;
+	int y = u(e) % (2 * ROW - 2) + 2;
+	food = Point(x / 2 * 2, y / 2 * 2);
+	mode = STANDARD_FOOD;
+	return *this;
+}
+
+std::vector<Food> Food::SetStandardFood(int a)
+{
+	unsigned int s = (unsigned int)time(0);
+	std::default_random_engine e;
+	std::uniform_int_distribution<int> u(0, std::max(2 * ROW, 2 * COL)); // 左闭右闭区间
+	std::vector<Food> ret;
+	e.seed(s);
+	while (a--)
+	{
+		int x = u(e) % (2 * COL - 2) + 2;
+		int y = u(e) % (2 * ROW - 2) + 2;
+		food = Point(x / 2 * 2, y / 2 * 2);
+		mode = STANDARD_FOOD;
+		ret.emplace_back(*this);
+	}
+	return ret;
+}
 
 /**
 * 食物的初始化函数
@@ -22,22 +57,6 @@ void Food::PrintFood()
 	if (mode == STANDARD_FOOD) std::cout << "★";
 	else if (mode == HASTEN_FOOD) std::cout << "☆";
 	else if (mode == POWER_FOOD) std::cout << "◎";
-}
-
-/**
-* 食物的制造函数
-*/
-Food Food::SetStandardFood()
-{
-	unsigned int s = (unsigned int)time(0);
-	std::default_random_engine e;
-	std::uniform_int_distribution<int> u(0, std::max(2 * ROW, 2 * COL)); // 左闭右闭区间
-	e.seed(s);
-	int x = u(e) % (2 * COL - 2) + 2;
-	int y = u(e) % (2 * ROW - 2) + 2;
-	food = Point(x / 2 * 2, y / 2 * 2);
-	mode = STANDARD_FOOD;
-	return *this;
 }
 
 /**

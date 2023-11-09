@@ -11,6 +11,7 @@ public:
 	Food();
 	void PrintFood();
 	Food SetStandardFood();
+	std::vector<Food> SetStandardFood(int a);
 	Point GetFood();
 	Food SetPowerFood();
 	Food SetHastenFood();
