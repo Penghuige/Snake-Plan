@@ -30,6 +30,9 @@
     <ClCompile Include="Code\controller.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Code\point.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\controller.h">

@@ -228,21 +228,21 @@ void Controller::gamemodeView(void)
 			{
 			case 0:		// 经典模式
 				system("cls");
-				gameStart(CLASSIC_MODE);
+				GameStart(CLASSIC_MODE);
 				//gamemodeView_flag = 0;
 				break;
 			case 1:		// 冒险模式
 				system("cls");
-				gameStart(ADVENTURE_MODE);
+				GameStart(ADVENTURE_MODE);
 				//gamemodeView_flag = 0;
 				break;
 			case 2:		// 闯关模式 -- 特定地图 限定食物 未完成
 				system("cls");
-				gameStart(LEVEL_MODE);
+				GameStart(LEVEL_MODE);
 				break;
 			case 3:
 				system("cls");
-				gameStart(DUO_MODE);
+				GameStart(DUO_MODE);
 				break;
 			default:
 				break;
@@ -282,20 +282,22 @@ void Controller::gameProductionTeamText(void)
 /**
 * 游戏启动函数
 */
-void Controller::gameStart(int mode)
+void Controller::GameStart(int mode)
 {
 	Map m1;
 	Food food;
 	//初始化蛇
-	Snake s1, s2;
+	Snake s1;
 	if(mode == CLASSIC_MODE)
 	{
 		// 经典模式不需要其他操作
+		food.mode = CLASSIC_MODE;
 	}
 	else if (mode == ADVENTURE_MODE)
 	{
 		// 随机生成墙体
 		// 或是调用已生成墙体
+		// 随机生成食物
 		m1.RandomBuild();
 		food.mode = HASTEN_FOOD;
 	}
@@ -303,8 +305,13 @@ void Controller::gameStart(int mode)
 	{
 		// 读取特定地图
 		m1.LoadMap(1);
-		// 读取食物
-		food.num = FOOD_NUM;
+		// 加载食物
+		int a = FOOD_NUM;
+		while (a--)
+		{
+			food.SetStandardFood();
+			m1.food_list.emplace_back(food);
+		}
 		food.mode = LEVEL_MODE;
 	}
 	else if (mode == DUO_MODE)
@@ -315,11 +322,14 @@ void Controller::gameStart(int mode)
 		// 读取蛇
 	}
 	int run_flag = GAME_RUNNING;
-	// 打印地图
+	// 防止食物和墙重合
+	while (find(m1.walls.begin(), m1.walls.end(), food.GetFood()) != m1.walls.end()) food.MoveFood();
+	// 打印地图 将食物加入地图
+	if (mode != LEVEL_MODE) m1.food_list.emplace_back(food);
 	m1.PrintInitmap();
 	while (run_flag == GAME_RUNNING)
 	{
-		run_flag = (gameRunning(s1, food, m1));
+		run_flag = (gameRunning(s1, m1, mode));
 	}
 	if (run_flag == LEVEL_VICTORY)
 	{
@@ -329,25 +339,42 @@ void Controller::gameStart(int mode)
 	// 清空屏幕
 	ClearScreen();
 }
-int Controller::gameRunning(Snake& s1, Food& food, Map& m)
+int Controller::gameRunning(Snake& s1, Map& m, int mode)
 {
 	// 打印蛇
 	s1.changeDirection();
 	s1.move();
-	if(s1.isDead(m)) return SNACK_LOSE;
-	if (s1.getHead() == food.GetFood())
+	//auto it = find(m.food_list.begin(), m.food_list.end(), s1.getHead());
+	if (s1.isDead(m)) return SNACK_LOSE;
+	for (auto it = m.food_list.begin(); it != m.food_list.end(); it++)
 	{
-		if (food.num) food.num--;
-		s1.EatFood(food);
+		if (it->GetFood() == s1.getHead())
+		{
+			s1.EatFood(*it);
+			if (mode == LEVEL_MODE)
+			{
+				m.food_list.erase(it);
+				break;
+			}
+			Food NewFood;
+			while (find(m.walls.begin(), m.walls.end(), NewFood.GetFood()) != m.walls.end()) NewFood.MoveFood();
+			NewFood.mode = it->mode;
+			m.food_list.erase(it);
+			m.food_list.emplace_back(NewFood);
+			break;
+		}
 	}
-	if (food.mode == LEVEL_MODE && !food.num) return LEVEL_VICTORY;
+	if (mode == LEVEL_MODE && m.food_list.empty()) return LEVEL_VICTORY;
 	s1.PrintSnake();
 	// 打印食物
-	food.PrintFood();
+	for (auto& it : m.food_list)
+	{
+		it.PrintFood();
+	}
 	// 打印分数
 	s1.PrintScore();
 	// 随机生成道具
-	food.RandomFood();
+	// m.food_list.emplace_back(food.RandomFood());
 
 	return GAME_RUNNING;
 }

@@ -4,22 +4,23 @@
 
 #include "virables.h"
 #include "point.h"
+#include <vector>
 
 class Food: public Point{
 public:
 	Food();
 	void PrintFood();
-	void SetStandardFood();
+	Food SetStandardFood();
 	Point GetFood();
-	void SetPowerFood();
-	void SetHastenFood();
-	void RandomFood();
+	Food SetPowerFood();
+	Food SetHastenFood();
+	Food RandomFood();
+	void MoveFood();
 	~Food();
 	int mode = STANDARD_MODE;	//模式
 	int num = STANDARD_FOOD;	//闯关模式专属
 private:
 	Point food;
-	//std::vector<Point> food_list;
 };
 
 #endif // !_FOOD_H_

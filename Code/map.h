@@ -4,6 +4,7 @@
 
 #include "virables.h"
 #include "point.h"
+#include "food.h"
 #include <vector>
 #include <string>
 
@@ -41,6 +42,7 @@ public:
 	void GenerateMap(int width, int height, int pointCount, const std::string& filename);
 	bool LoadMap(int x);//加载第x个地图
 	std::vector<Point> walls;//新增障碍节点
+	std::vector<Food> food_list;//新增食物节点
 private:
 	std::vector<std::vector<Point> > maps;
 	//std::vector<Point> initmap;//保存初始地图 已经被walls淘汰

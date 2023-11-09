@@ -45,19 +45,8 @@ void Map::RandomBuild()
 }
 
 /**
-* 读取第x张地图
+* 生成地图与加载地图函数
 */
-//bool Map::LoadMap(int x)
-//{
-//	if (x - 1 > maps.size()) return false;
-	//for (auto& p : maps[x - 1])
-	//{
-	//	walls.emplace_back(p);
-	//}
-//	return true;
-//}
-
-
 void Map::GenerateMap(int width, int height, int pointCount, const std::string& filename)
 {
 	std::random_device rd;

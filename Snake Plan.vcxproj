@@ -131,6 +131,7 @@
     <ClCompile Include="Code\food.cpp" />
     <ClCompile Include="Code\map.cpp" />
     <ClCompile Include="Code\newmain.cpp" />
+    <ClCompile Include="Code\point.cpp" />
     <ClCompile Include="Code\snake.cpp" />
   </ItemGroup>
   <ItemGroup>

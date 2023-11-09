@@ -16,7 +16,7 @@
 #define ROW 14
 #define COL 36
 #define MAX_DIR_BUF 10
-#define WALL_NUM 30
+#define WALL_NUM 10
 #define MIN_DIST 10
 #define FOOD_NUM 3
 #define POWER_TIME 10

@@ -18,6 +18,7 @@ public:
 	Point(double x, double y) { this->x = (int)x; this->y = (int)y; }
 	int getX(void) { return x; }
 	int getY(void) { return y; }
+	void MovePoint() { x+=2, y++; }
 	void operator()(int x, int y) { this->x = x; this->y = y; }
 	void operator()(Point p) { this->x = p.x; this->y = p.y; }
 	void operator=(Point p) { this->x = p.x; this->y = p.y; }

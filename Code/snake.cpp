@@ -206,8 +206,8 @@ void Snake::EatFood(Food& f)
 	Controller::gotoxy(f.getX(), f.getY());
 	// 一个方块占两个空格
 	std::cout << "  ";
-	snake.emplace_back(f);
-	if(f.mode == STANDARD_FOOD) f.SetStandardFood();
+	snake.push_back(f);
+	// if(f.mode == STANDARD_FOOD) f.SetStandardFood();
 }
 
 /**
