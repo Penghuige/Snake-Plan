@@ -34,10 +34,14 @@ public:
 	int ReadGrade();
 	//更新最高分到文件
 	void WriteGrade();
+	// 设定控制台界面初始设定
+	bool SetSize(int width, int height);
 	// 光标移动
 	static void gotoxy(int x, int y);
 private:
 	int max_score = 0;
+	// 在类的成员变量中定义上一次生成特性食物的时间
+	time_t lastFoodTime = 0;
 };
 
 

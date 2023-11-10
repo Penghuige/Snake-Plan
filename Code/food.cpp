@@ -93,10 +93,18 @@ Food Food::RandomFood()
 	int x = rand() % (2 * COL - 2) + 2;
 	int y = rand() % (2 * ROW - 2) + 2;
 	food = Point(x / 2 * 2, y / 2 * 2);
-	int mode = rand() % GENER_FREQU;
-	if (mode == 0) return Food::SetHastenFood();
-	else if (mode == 1) return Food::SetPowerFood();
-}
+	int mod = rand() % 10;
+	if (mod <= 7)
+	{
+		mode = HASTEN_FOOD;
+		return Food::SetHastenFood();
+	}
+	else
+	{
+		mode = POWER_FOOD;
+		return Food::SetPowerFood();
+	}
+	}
 
 void Food::MoveFood()
 {

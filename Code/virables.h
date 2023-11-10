@@ -20,7 +20,7 @@
 #define MIN_DIST 10
 #define FOOD_NUM 3
 #define POWER_TIME 10
-#define GENER_FREQU 100
+#define GENER_FREQU 10
 
 /*
 * ¿É¸Ä

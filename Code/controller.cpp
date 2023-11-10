@@ -43,6 +43,18 @@ void Controller::WriteGrade()
 	pf = NULL; //文件指针及时置空
 }
 
+bool Controller::SetSize(int width, int height)
+{
+	HANDLE hOutput = GetStdHandle(STD_OUTPUT_HANDLE); //获取输出句柄
+	SMALL_RECT wrt = { 0, 0, width - 1, height - 1 }; //设置宽高
+	bool ret = SetConsoleWindowInfo(hOutput, TRUE, &wrt); // 设置窗体尺寸
+	SetConsoleTitleA("Snake Plan"); //设置一个新标题
+	if (!ret) return false;
+	COORD coord = { width, height };
+	ret = SetConsoleScreenBufferSize(hOutput, coord); // 设置缓冲尺寸
+	return ret;
+}
+
 /**
 * 光标移动函数
 * 将光标移动到x,y的位置
@@ -69,42 +81,69 @@ void Controller::updateDir()
 //2.当空格键时，生成暂停界面, 这里也是框架
 void Controller::PauseView()
 {
-	int PauseValue;
-	int PauseView_flag = 1;
-	system("cls");
-	printf("\n\n");
-	printf("\t1.继续游戏\n");
-	printf("\t2.设置\n");
-	printf("\t3.返回选择模式界面\n");
-	for (int i = 0; i < 4; i++)
+	int cur = 0;
+	while (1)
 	{
-		printf("\t请选择你的操作：");
-		fflush(stdin);
-		scanf_s("%d", &PauseValue);
-		switch (PauseValue)
+		int gameMenu_flag = 1;
+		system("cls");
+		gotoxy(COL - 4, ROW / 2 + 2);
+		printf("%s继续游戏", cur == 0 ? "==>" : "");
+		gotoxy(COL - 4, ROW / 2 + 4);
+		printf("%s设置", cur == 1 ? "==>" : "");
+		gotoxy(COL - 4, ROW / 2 + 6);
+		printf("%s返回菜单界面", cur == 2 ? "==>" : "");
+		gotoxy(COL - 4, ROW / 2 + 8);
+		printf("%s退出游戏", cur == 3 ? "==>" : "");
+
+		switch (_getch())
 		{
-		case 1:
-			return; //返回到界面（这里直接添加函数）
+		case 'w':
+		case 'W':
+			if (--cur < 0)
+			{
+				cur = 0;
+			}
 			break;
-		case 2:
-			gameFit();
-			PauseView_flag = 0;
+		case 's':
+		case 'S':
+			if (++cur > 3)
+			{
+				cur = 3;
+			}
 			break;
-		case 3:
-			gamemodeView();
-			PauseView_flag = 0;
+		case '\r':
+			switch (cur)
+			{
+			case 0:		// 继续游戏
+				gamemodeView();
+				gameMenu_flag = 0;
+				break;
+			case 1:		// 设置
+				gameFit();
+
+				break;
+			case 2:		// 返回菜单
+				gameText();
+
+				break;
+			case 3:		// 退出游戏
+				gameMenu_flag = 0;
+				break;
+			default:
+				gameMenu_flag = 0;
+				break;
+			}
 			break;
 		default:
-			printf("\n选项错误！请重新选择!!!\n\n");
-			system("pause");
-			continue;
+			break;
 		}
-		if (PauseView_flag == 0)
+		if (gameMenu_flag == 0)
 		{
 			break;
 		}
 	}
 }
+
 
 /**
 * 打印出游戏界面的主菜单，通过_getch()函数接收输入的指令，通过
@@ -207,8 +246,6 @@ void Controller::gamemodeView(void)
 
 		switch (_getch())
 		{
-		case ' ':
-			return;
 		case 'w':
 		case 'W':
 			if (--cur < 0)
@@ -236,7 +273,7 @@ void Controller::gamemodeView(void)
 				GameStart(ADVENTURE_MODE);
 				//gamemodeView_flag = 0;
 				break;
-			case 2:		// 闯关模式 -- 特定地图 限定食物 未完成
+			case 2:		// 闯关模式 -- 特定地图 限定食物
 				system("cls");
 				GameStart(LEVEL_MODE);
 				break;
@@ -262,7 +299,7 @@ void Controller::gamemodeView(void)
 void Controller::gameText(void)
 {
 	system("cls");
-	printf("*蛇蛇大作战分为经典模式和对战模式。\n");
+	printf("*Snake Plan分为经典模式和对战模式。\n");
 	printf("  \n");
 	printf("*经典模式用W、A、S、D来控制蛇的移动，吃到食物后蛇的长度增加，撞到自身或墙体则游戏结束。\n");
 	printf("  \n");
@@ -342,14 +379,13 @@ int Controller::gameRunning(Snake& s1, Map& m, int mode)
 	// 打印蛇
 	s1.changeDirection();
 	s1.move();
-	//auto it = find(m.food_list.begin(), m.food_list.end(), s1.getHead());
 	if (s1.isDead(m)) return SNACK_LOSE;
 	for (auto it = m.food_list.begin(); it != m.food_list.end(); it++)
 	{
 		if (it->GetFood() == s1.getHead())
 		{
 			s1.EatFood(*it);
-			if (mode == LEVEL_MODE)
+			if (mode == LEVEL_MODE || it->mode != STANDARD_FOOD)
 			{
 				m.food_list.erase(it);
 				break;
@@ -371,8 +407,16 @@ int Controller::gameRunning(Snake& s1, Map& m, int mode)
 	}
 	// 打印分数
 	s1.PrintScore();
+	// 生成食物时间
+	time_t currentTime = time(0);
 	// 随机生成道具
-	// m.food_list.emplace_back(food.RandomFood());
+	if (currentTime - lastFoodTime >= GENER_FREQU)
+	{
+		Food food;
+		food.RandomFood();
+		m.food_list.emplace_back(food);
+		lastFoodTime = currentTime;
+	}
 
 	return GAME_RUNNING;
 }
