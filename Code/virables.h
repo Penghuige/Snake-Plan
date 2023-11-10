@@ -54,46 +54,13 @@
 #define HASTEN_FOOD 1
 #define POWER_FOOD 2
 
-#define SNACK_LOSE 0
+#define SNACK_LOSE -100
 #define GAME_RUNNING 1
-#define LEVEL_VICTORY 2
+#define GAME_BREAK 0
+#define GAME_OVER 2
+#define GAME_RESTART 3
+#define LEVEL_VICTORY 100
 
-/**
-* 不可改
-* KONG 标记空（什么也没有）
-* WALL 标记墙
-* OBJECT 标记物体
-* HEAD 标记蛇头
-* BODY 标记蛇身
-* UP 方向键：W
-* DOWN 方向键：S
-* LEFT 方向键：A
-* RIGHT 方向键：D
-* UP2 方向键：上
-* DOWN2 方向键：下
-* LEFT2 方向键：左
-* RIGHT2 方向键：右
-* SPACE 暂停
-* ESC 退出
-*/
-#define KONG 0
-#define WALL 1
-#define OBJECT 2
-#define HEAD 3
-#define BODY 4
-
-//#define UP 119
-//#define DOWN 115
-//#define LEFT 97
-//#define RIGHT 100
-
-#define UP2 72
-#define DOWN2 80
-#define LEFT2 75
-#define RIGHT2 77
-
-#define SPACE 32
-#define ESC 27
 
 /**
 * 游戏初始设定

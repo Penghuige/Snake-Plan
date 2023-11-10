@@ -79,7 +79,7 @@ void Controller::updateDir()
 }
 
 //2.当空格键时，生成暂停界面, 这里也是框架
-void Controller::PauseView()
+int Controller::PauseView()
 {
 	int cur = 0;
 	while (1)
@@ -115,22 +115,19 @@ void Controller::PauseView()
 			switch (cur)
 			{
 			case 0:		// 继续游戏
-				gamemodeView();
-				gameMenu_flag = 0;
+				ClearScreen();
+				return GAME_RUNNING;
 				break;
 			case 1:		// 设置
 				gameFit();
-
 				break;
 			case 2:		// 返回菜单
-				gameText();
-
+				return GAME_BREAK;
 				break;
 			case 3:		// 退出游戏
-				gameMenu_flag = 0;
+				return GAME_OVER;
 				break;
 			default:
-				gameMenu_flag = 0;
 				break;
 			}
 			break;
@@ -142,15 +139,123 @@ void Controller::PauseView()
 			break;
 		}
 	}
+	return GAME_RUNNING;
 }
 
+/**
+* 游戏胜利界面
+* 返回是否继续游戏
+*/
+int Controller::VictoryView()
+{
+	ClearScreen();
+	int cur = 0;
+	while (1)
+	{
+		gotoxy(COL - 4, ROW / 2);
+		std::cout << "YOU WIN";
+		gotoxy(COL - 6, ROW / 2 + 2);
+		std::cout << "是否继续游戏";
+		gotoxy(COL - 4, ROW / 2 + 4);
+		std::cout << ((cur == 0) ? "==> Yes" : "Yes   ");
+		gotoxy(COL - 4, ROW / 2 + 6);
+		std::cout << ((cur == 1) ? "==> No" : "No     ");
+		switch (_getch())
+		{
+		case 'w':
+		case 'W':
+			if (--cur < 0)
+			{
+				cur = 0;
+			}
+			break;
+		case 's':
+		case 'S':
+			if (++cur > 1)
+			{
+				cur = 1;
+			}
+			break;
+		case '\r':
+			switch (cur)
+			{
+			case 0:		// 继续游戏
+				return GAME_RESTART;
+				break;
+			case 1:		// 退出游戏
+				return GAME_OVER;
+				break;
+			default:
+				break;
+			}
+			break;
+		default:
+			break;
+		}
+
+	}
+}
+
+/**
+* 游戏失败界面
+* 返回是否继续游戏
+*/
+int Controller::LoseView()
+{
+	ClearScreen();
+	int cur = 0;
+	while (1)
+	{
+		gotoxy(COL - 4, ROW / 2);
+		std::cout << "YOU LOSE";
+		gotoxy(COL - 8, ROW / 2 + 2);
+		std::cout << "是否继续游戏";
+		gotoxy(COL - 4, ROW / 2 + 4);
+		std::cout << ((cur == 0) ? "==> Yes" : "Yes     ");
+		gotoxy(COL - 4, ROW / 2 + 6);
+		std::cout << ((cur == 1) ? "==> No" : "No      ");
+		switch (_getch())
+		{
+		case 'w':
+		case 'W':
+			if (--cur < 0)
+			{
+				cur = 0;
+			}
+			break;
+		case 's':
+		case 'S':
+			if (++cur > 1)
+			{
+				cur = 1;
+			}
+			break;
+		case '\r':
+			switch (cur)
+			{
+			case 0:		// 继续游戏
+				return GAME_RESTART;
+				break;
+			case 1:		// 退出游戏
+				return GAME_OVER;
+				break;
+			default:
+				break;
+			}
+			break;
+		default:
+			break;
+		}
+
+	}
+}
 
 /**
 * 打印出游戏界面的主菜单，通过_getch()函数接收输入的指令，通过
 * while函数和修改cur的值再加上if判断来实现-->和<--的跳转显示
 * 添加gameMenu_flag来作为标识符，当选择进入后关闭该界面。
 */
-void Controller::gameMenu()
+int Controller::gameMenu()
 {
 	int cur = 0;
 	while (1)
@@ -190,8 +295,8 @@ void Controller::gameMenu()
 			switch (cur)
 			{
 			case 0:		// 开始游戏
-				gamemodeView();
-				gameMenu_flag = 0;
+				gameMenu_flag = gamemodeView();
+				if (gameMenu_flag == GAME_RESTART) gameMenu_flag = gamemodeView();
 				break;
 			case 1:		// 设置
 				gameFit();
@@ -216,16 +321,13 @@ void Controller::gameMenu()
 		default:
 			break;
 		}
-		if (gameMenu_flag == 0)
-		{
-			break;
-		}
+		if (!gameMenu_flag) return 0;
 	}
 }
 
 
 // 游戏模式选择
-void Controller::gamemodeView(void)
+int Controller::gamemodeView(void)
 {
 	int cur = 0;
 
@@ -265,31 +367,27 @@ void Controller::gamemodeView(void)
 			{
 			case 0:		// 经典模式
 				system("cls");
-				GameStart(CLASSIC_MODE);
+				return GameStart(CLASSIC_MODE);
 				//gamemodeView_flag = 0;
 				break;
 			case 1:		// 冒险模式
 				system("cls");
-				GameStart(ADVENTURE_MODE);
+				return GameStart(ADVENTURE_MODE);
 				//gamemodeView_flag = 0;
 				break;
 			case 2:		// 闯关模式 -- 特定地图 限定食物
 				system("cls");
-				GameStart(LEVEL_MODE);
+				return GameStart(LEVEL_MODE);
 				break;
 			case 3:
 				system("cls");
-				GameStart(DUO_MODE);
+				return GameStart(DUO_MODE);
 				break;
 			default:
 				break;
 			}
 			break;
 		default:
-			break;
-		}
-		if (gamemodeView_flag == 0)
-		{
 			break;
 		}
 	}
@@ -319,7 +417,7 @@ void Controller::gameProductionTeamText(void)
 /**
 * 游戏启动函数
 */
-void Controller::GameStart(int mode)
+int Controller::GameStart(int mode)
 {
 	Map m1;
 	Food food;
@@ -328,7 +426,7 @@ void Controller::GameStart(int mode)
 	if (mode == CLASSIC_MODE)
 	{
 		// 经典模式不需要其他操作
-		food.mode = CLASSIC_MODE;
+		food.mode = STANDARD_FOOD;
 	}
 	else if (mode == ADVENTURE_MODE)
 	{
@@ -369,7 +467,12 @@ void Controller::GameStart(int mode)
 	if (run_flag == LEVEL_VICTORY)
 	{
 		// 跳转游戏胜利画面
-		PauseView();
+		return VictoryView();
+	}
+	else if (run_flag == SNACK_LOSE || run_flag == GAME_OVER)
+	{
+		// 跳转游戏失败画面
+		return LoseView();
 	}
 	// 清空屏幕
 	ClearScreen();
@@ -377,7 +480,18 @@ void Controller::GameStart(int mode)
 int Controller::gameRunning(Snake& s1, Map& m, int mode)
 {
 	// 打印蛇
-	s1.changeDirection();
+	if (!s1.changeDirection())
+	{
+		// 暂停界面
+		if (PauseView() == GAME_RUNNING)
+		{
+			// 继续游戏或是退出游戏
+			// 重新绘制地图
+			m.PrintInitmap();
+		}
+		else if (PauseView() == GAME_BREAK)return GAME_BREAK;
+		else if (PauseView() == GAME_OVER)return GAME_OVER;
+	}
 	s1.move();
 	if (s1.isDead(m)) return SNACK_LOSE;
 	for (auto it = m.food_list.begin(); it != m.food_list.end(); it++)

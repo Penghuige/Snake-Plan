@@ -36,6 +36,7 @@ bool Snake::changeDirection()
 		switch (ch)
 		{
 		case 27://ESC
+		case ' ': //¿Õ¸ñ
 			return false;
 		default:
 			switch (ch)

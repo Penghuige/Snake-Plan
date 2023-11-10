@@ -8,14 +8,18 @@
 class Controller
 {
 public:
+	// 游戏失败界面函数
+	int LoseView();
+	// 游戏胜利界面函数
+	int VictoryView();
 	//游戏中途暂停函数
-	void PauseView();
+	int PauseView();
 	//修改方向函数
 	void updateDir();
 	// 主菜单
-	void gameMenu();
+	int gameMenu();
 	// 游戏模式选择
-	void gamemodeView();
+	int gamemodeView();
 	// 设置界面
 	void gameFit();
 	// 游戏说明
@@ -23,7 +27,7 @@ public:
 	// 制作组
 	void gameProductionTeamText();
 	// 游戏启动
-	void GameStart(int mode);
+	int GameStart(int mode);
 	// 游戏运行
 	int gameRunning(Snake& s1, Map& m, int mode);
 	//游戏结束
